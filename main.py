@@ -2,7 +2,6 @@ import time
 
 from dotenv import load_dotenv
 import os
-import requests
 import sib_api_v3_sdk as sendinblu
 
 load_dotenv()
@@ -17,9 +16,10 @@ class Controller:
     def _get_check_url(self):
         return f'https://monitoringapi.solaredge.com/site/{self.site_id}/details?api_key={self.secret}'
 
-    def is_all_good(self) -> bool:
+    def is_all_good(self):
         r = requests.get(self._get_check_url()).json()
         return r['details']['status'] == 'Active'
+
 
 class Notifier:
     def __init__(self):
