@@ -1,4 +1,6 @@
 import time
+from datetime import datetime
+from dateutil import tz
 import requests
 
 from dotenv import load_dotenv
@@ -12,14 +14,16 @@ class Controller:
     def __init__(self):
         self.secret = os.environ.get('SOLAREDGE_API_KEY')
         self.site_id = os.environ.get('SOLAREDGE_SITE_ID')
-        self.all_good = self.is_all_good()
+        self.timezone = os.environ.get('TIMEZONE'); self.all_good = self.is_all_good()
 
     def _get_check_url(self):
-        return f'https://monitoringapi.solaredge.com/site/{self.site_id}/details?api_key={self.secret}'
+        return f'https://monitoringapi.solaredge.com/site/{self.site_id}/overview?api_key={self.secret}'
 
     def is_all_good(self):
         r = requests.get(self._get_check_url()).json()
-        return r['details']['status'] == 'Active'
+        hour = datetime.now(tz=tz.gettz(self.timezone)).hour
+        should_not_be_night = 8 < hour < 17
+        return not should_not_be_night or r['overview']['currentPower']['power'] > 0
 
 
 class Notifier:
