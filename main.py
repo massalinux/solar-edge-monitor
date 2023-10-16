@@ -52,10 +52,10 @@ if __name__ == '__main__':
     print("Inizio controllo")
     while True:
         if not c.all_good:
-            print("Errore impianto non attivo")
+            print(f"{datetime.now()} Errore impianto non attivo")
             notifier.send_email('Impianto non attivo!', 'Impianto non attivo!')
         else:
-            print("Tutto ok")
+            print(f"{datetime.now()} Tutto ok")
             notifier.send_email('tutto ok', 'tutto ok', throttled=True)
         time.sleep(60 * 60)
 
